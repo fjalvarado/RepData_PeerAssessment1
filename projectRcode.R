@@ -51,4 +51,19 @@ summary(activitydata$steps)
 ## Create new data frame
 activitydatanew<-activitydata
 
+## Add column with average steps per interval and replace NA's with these values
+activitydatanew$stepsinterval<-stepsperinterval$avgsteps
+activitydatanew$steps[which(is.na(activitydatanew$steps))]<-activitydatanew$stepsinterval[which(is.na(activitydatanew$steps))]
+
+## What is total number of steps taken per day? (NA's have been replaced)
+
+stepsperdaynew<-activitydatanew %>% group_by(date) %>% summarize(steps=sum(steps))
+
+## Histogram
+stepsdaynew<-ggplot(stepsperdaynew,aes(date,steps))
+stepsdaynew+geom_col()
+
+## Mean and median
+summary(stepsperdaynew$steps)
+
 
