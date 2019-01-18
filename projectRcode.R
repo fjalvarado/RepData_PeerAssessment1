@@ -1,6 +1,11 @@
 ## Loading and preprocessing data
 activitydata<-read.csv("activity.csv")
 
+## Loading libraries
+library("timeDate")
+library("ggplot2")
+library("dplyr")
+
 ## Add weekday
 activitydata$day <- weekdays(as.Date(activitydata$date))
 
@@ -34,4 +39,16 @@ stepsperinterval<-activitydata %>% group_by(interval) %>% summarize(avgsteps=mea
 
 lineinterval<-ggplot(stepsperinterval,aes(interval,avgsteps))
 lineinterval+geom_line()
+
+## Interval with max avg steps
+maxintsteps<-max(stepsperinterval$avgsteps)
+stepsperinterval[stepsperinterval$avgsteps==maxintsteps,1]
+
+## Number of NA's
+summary(activitydata$steps)
+## The last column of the summary indicates the number of rows with NA's
+
+## Create new data frame
+activitydatanew<-activitydata
+
 
