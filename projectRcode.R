@@ -62,6 +62,7 @@ stepsperdaynew<-activitydatanew %>% group_by(date) %>% summarize(steps=sum(steps
 ## Histogram
 stepsdaynew<-ggplot(stepsperdaynew,aes(date,steps))
 stepsdaynew+geom_col()
+stepsdaynew+geom_col()+theme(axis.text.x = element_text(angle=90,hjust=1,vjust=0.5))
 
 ## Mean and median
 summary(stepsperdaynew$steps)
