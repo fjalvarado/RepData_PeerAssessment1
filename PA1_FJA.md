@@ -80,6 +80,21 @@ library("dplyr")
 ```
 
 ```r
+library("gridExtra")
+```
+
+```
+## 
+## Attaching package: 'gridExtra'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     combine
+```
+
+```r
 library("formatR")  # For tidy R-Markdown
 ```
 
@@ -231,3 +246,28 @@ summary(stepsperdaynew$steps)
 We observe that these values are slightly higher than those obtained without removing the missing values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+In this final stage, we create a couple of time series with the average number of steps per interval on weekdays and on weekends.
+
+
+```r
+activitywday <- activitydatanew[activitydatanew$wDay == "weekday", ]
+activitywkend <- activitydatanew[activitydatanew$wDay == "weekend", ]
+stepsperintervalwday <- activitywday %>% group_by(interval) %>% summarize(avgsteps = mean(steps))
+stepsperintervalwkend <- activitywkend %>% group_by(interval) %>% summarize(avgsteps = mean(steps))
+```
+
+And we make a panel plot containing a time series plotof the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
+
+```r
+plotwday <- ggplot(stepsperintervalwday, aes(interval, avgsteps)) + geom_line() + 
+    ggtitle("Weekdays")
+plotwkend <- ggplot(stepsperintervalwkend, aes(interval, avgsteps)) + geom_line() + 
+    ggtitle("Weekends")
+grid.arrange(plotwday, plotwkend, ncol = 1)
+```
+
+![](PA1_FJA_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+We observe that on the weekends, activity begins later in the day and it is relatively high until late at night.
