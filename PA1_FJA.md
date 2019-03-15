@@ -175,6 +175,59 @@ stepsperinterval[stepsperinterval$avgsteps == maxintsteps, 1]
 
 ## Imputing missing values
 
+Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
 
+We calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+
+
+```r
+summary(activitydata$steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    0.00    0.00    0.00   37.38   12.00  806.00    2304
+```
+
+Now, we will fill in all of the missing values in the dataset. We create a new data frame, and add a column with the average number of steps per interval. This is the value that will replace missing values.
+
+
+```r
+## Create new data frame
+activitydatanew <- activitydata
+
+## Add column with average steps per interval and replace NA's with these
+## values
+activitydatanew$stepsinterval <- stepsperinterval$avgsteps
+activitydatanew$steps[which(is.na(activitydatanew$steps))] <- activitydatanew$stepsinterval[which(is.na(activitydatanew$steps))]
+
+## What is total number of steps taken per day? (NA's have been replaced)
+
+stepsperdaynew <- activitydatanew %>% group_by(date) %>% summarize(steps = sum(steps))
+```
+
+And finally, we make a histogram of the total number of steps taken each day and calculate and report the mean and median total number of steps taken per day. 
+
+
+```r
+## Histogram
+stepsdaynew <- ggplot(stepsperdaynew, aes(date, steps))
+stepsdaynew + geom_col() + theme(axis.text.x = element_text(angle = 90, hjust = 1, 
+    vjust = 0.5))
+```
+
+![](PA1_FJA_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+## Mean and median
+summary(stepsperdaynew$steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10766   10766   12811   21194
+```
+
+We observe that these values are slightly higher than those obtained without removing the missing values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
